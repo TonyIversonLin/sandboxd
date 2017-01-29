@@ -1,0 +1,6 @@
+**.mp3
+**.m4a
+**.mp4
+node_modules
+npm-debug.log
+.DS_Store

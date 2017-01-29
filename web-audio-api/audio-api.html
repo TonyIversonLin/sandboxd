@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Web Audio Api</title>
+</head>
+<body>
+	<button>Play</button>
+	<script type="text/javascript">
+		let context;
+		let contextClass = (window.AudioContext ||
+			window.webkitAudioContext ||
+			window.mozAudioContext ||
+			window.oAudioContext ||
+			window.msAudioContext);
+		if(contextClass){
+			context = new contextClass();
+		}else console.log('Web Audio API is not available');
+
+		let request = new XMLHttpRequest();
+		let url = 'http://127.0.0.1:8887/resource/instrument1.mp3';
+		request.open('GET',url,true);
+		request.responseType = 'arraybuffer';
+		request.onload = function() {
+			context.decodeAudioData(request.response,function(theBuffer){
+				playSound(theBuffer);
+			});
+		}
+		request.send();
+
+		function playSound(buffer){
+			let source = context.createBufferSource();
+			source.buffer = buffer;
+			source.connect(context.destination);
+			source.start(0);
+		}
+
+	</script>
+</body>
+</html>
