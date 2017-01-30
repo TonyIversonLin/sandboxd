@@ -3,7 +3,9 @@ function BufferLoader(context, urls){
 	let promiseArray = [];
 
 	for(let i=0; i<urls.length;i++){
-		let url = urls[i];	
+
+		let url = urls[i];
+
 	  let promise = new Promise(function(resolve,reject){
 	  	let request = new XMLHttpRequest();
 	  	request.responseType = 'arraybuffer';
@@ -20,6 +22,7 @@ function BufferLoader(context, urls){
 			};
 			request.send();
 	  });
+	  
 	  promiseArray.push(promise);
 	}
 

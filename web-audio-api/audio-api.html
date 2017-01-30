@@ -1,41 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Web Audio Api</title>
+	<title>Web Audio Api - Basic Drum Pattern</title>
 </head>
 <body>
 	<button>Play</button>
+	<script type="text/javascript" src='init.js'></script>
 	<script type="text/javascript" src='BufferLoader.js'></script>
 	<script type="text/javascript">
-		let context;
-		let contextClass = (window.AudioContext ||
-			window.webkitAudioContext ||
-			window.mozAudioContext ||
-			window.oAudioContext ||
-			window.msAudioContext);
-		if(contextClass){
-			context = new contextClass();
-		}else console.log('Web Audio API is not available');
 
-		// let request = new XMLHttpRequest();
-		// let url = 'resource/instrument1.mp3';
-		// request.open('GET',url,true);
-		// request.responseType = 'arraybuffer';
-		// request.onload = function() {
-		// 	context.decodeAudioData(request.response,function(theBuffer){
-		// 		playSound(theBuffer);
-		// 	});
-		// }
-		// request.send();
+		let context = init();
+		BufferLoader(context,[
+			'resource/instrument1.mp3',
+			'resource/instrument2.mp3',
+			'resource/instrument3.mp3'])
+		.then(playSong);
 
-		BufferLoader(context,['resource/instrument1.mp3'])
-			.then(playSound);
+		function playSong(buffers){
+			beat1 = buffers[0];
+			beat2 = buffers[1];
+			beat3 = buffers[2];
 
-		function playSound(buffer){
+			let eightNoteTime = 0.3;
+			let startTime = context.currentTime;
+			
+			for(let bar = 0; bar<2; bar++){
+				let time = startTime + bar * 8 * eightNoteTime;
+
+				playSound(beat1, time);
+				playSound(beat1, time + 4 * eightNoteTime);
+
+				playSound(beat2, time + 2 * eightNoteTime);
+				playSound(beat2, time + 6 * eightNoteTime);
+
+				for(let i=0; i<8; ++i){
+					playSound(beat3, time + i * eightNoteTime);
+				}
+			}
+		}
+
+		function playSound(buffer, time){
 			let source = context.createBufferSource();
-			source.buffer = buffer[0];
+			source.buffer = buffer;
 			source.connect(context.destination);
-			source.start(0);
+			source.start(time);
 		}
 
 	</script>
