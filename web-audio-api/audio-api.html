@@ -4,7 +4,7 @@
 	<title>Web Audio Api - Basic Drum Pattern</title>
 </head>
 <body>
-	<button>Play</button>
+	<button id='playSong' disabled>Play</button>
 	<script type="text/javascript" src='init.js'></script>
 	<script type="text/javascript" src='BufferLoader.js'></script>
 	<script type="text/javascript">
@@ -14,7 +14,15 @@
 			'resource/instrument1.mp3',
 			'resource/instrument2.mp3',
 			'resource/instrument3.mp3'])
-		.then(playSong);
+		.then(play);
+
+		function play(buffers){
+			let button = document.getElementById('playSong');
+			button.disabled = false;
+			button.onclick = function(){
+				playSong(buffers);
+			}
+		}
 
 		function playSong(buffers){
 			beat1 = buffers[0];
@@ -23,7 +31,7 @@
 
 			let eightNoteTime = 0.3;
 			let startTime = context.currentTime;
-			
+
 			for(let bar = 0; bar<2; bar++){
 				let time = startTime + bar * 8 * eightNoteTime;
 
