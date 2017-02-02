@@ -4,10 +4,14 @@
 	<title>Web Audio Api - Basic Drum Pattern</title>
 </head>
 <body>
-	<p>Simple drum beats <button id='beats' disabled>Play</button></p>
+	<p>Simple drum beats 
+		<button id='beats' disabled>Play</button>
+		<input type='range' id='beat-volumn' min='0' max='100' step='1'>Volumn
+	</p>
 	<p>Cross fading <button id='crossfade' disabled>Play</button></p>
 	<script type="text/javascript" src='init.js'></script>
 	<script type="text/javascript" src='BufferLoader.js'></script>
+	<script type="text/javascript" src='Beats.js'></script>
 	<script type="text/javascript">
 
 		let context = init();
@@ -23,45 +27,21 @@
 			let buttons = document.getElementsByTagName('button');
 			for(let i=0;i<buttons.length;i++) buttons[i].disabled = false; 
 
+			let beats = new Beats(buffers);
 			let beatPattern = document.getElementById('beats');
+			let beatVolumn = document.getElementById('beat-volumn');
 			beatPattern.onclick = function(){
-				playSong(buffers);
+				beats.playSheet();
 			}
+			beatVolumn.onclick = function(){
+				beats.gainNode.gain.value = parseInt(this.value)/100;
+			}
+
 
 			let crossfading = document.getElementById('crossfade');
 			crossfading.onclick = function(){
-				playCrossFade([buffers[3],buffers[4]],2,0.5);
+				playCrossFade([buffers[3],buffers[4]],2,2);
 			}
-		}
-
-		function playSong(buffers){
-			beat1 = buffers[0];
-			beat2 = buffers[1];
-			beat3 = buffers[2];
-
-			let eightNoteTime = 0.3;
-			let startTime = context.currentTime;
-
-			for(let bar = 0; bar<2; bar++){
-				let time = startTime + bar * 8 * eightNoteTime;
-
-				playSound(beat1, time);
-				playSound(beat1, time + 4 * eightNoteTime);
-
-				playSound(beat2, time + 2 * eightNoteTime);
-				playSound(beat2, time + 6 * eightNoteTime);
-
-				for(let i=0; i<8; ++i){
-					playSound(beat3, time + i * eightNoteTime);
-				}
-			}
-		}
-
-		function playSound(buffer, time){
-			let source = context.createBufferSource();
-			source.buffer = buffer;
-			source.connect(context.destination);
-			source.start(time);
 		}
 
 		function playCrossFade(buffers, iterations, fadeTime) {
