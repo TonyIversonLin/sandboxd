@@ -6,9 +6,13 @@
 <body>
 	<p>Simple drum beats 
 		<button id='beats' disabled>Play</button>
-		<input type='range' id='beat-volumn' min='0' max='100' step='1'>Volumn
+		<input type='range' id='beat-volumn' min='0' max='100' step='1' value='50'>Volumn
 	</p>
-	<p>Cross fading <button id='crossfade' disabled>Play</button></p>
+	<p>Cross fading 
+		<button id='crossfade' disabled>Play</button>
+		<input type='range' id='crossfade-volumn' min='0' max='100' step='1' value='50'>Volumn
+		<input type='range' id='crossfade-fadeTime' min='0' max='3' step='1' value='1.5'>Fade Time
+	</p>
 	<script type="text/javascript" src='init.js'></script>
 	<script type="text/javascript" src='BufferLoader.js'></script>
 	<script type="text/javascript" src='Beats.js'></script>
@@ -24,24 +28,25 @@
 		.then(play);
 
 		function play(buffers){
+
 			let buttons = document.getElementsByTagName('button');
 			for(let i=0;i<buttons.length;i++) buttons[i].disabled = false; 
 
 			let beats = new Beats(buffers);
 			let beatPattern = document.getElementById('beats');
 			let beatVolumn = document.getElementById('beat-volumn');
-			beatPattern.onclick = function(){
-				beats.playSheet();
-			}
-			beatVolumn.onclick = function(){
-				beats.gainNode.gain.value = parseInt(this.value)/100;
+			beatPattern.onclick = function(){beats.playSheet();}
+			beatVolumn.onclick = function(){beats.gainNode.gain.value = parseInt(this.value)/100;
 			}
 
-
-			let crossfading = document.getElementById('crossfade');
-			crossfading.onclick = function(){
-				playCrossFade([buffers[3],buffers[4]],2,2);
+			let crossfade = new CrossFade([buffers[3],buffers[4]]);
+			let crossfadePlay = document.getElementById('crossfade');
+			let crossfadeTime = document.getElementById('crossfade-fadeTime');
+			crossfadePlay.onclick = function(){
+				//playCrossFade([buffers[3],buffers[4]],2,2);
+				crossfade.playSheet();
 			}
+			
 		}
 
 		function playCrossFade(buffers, iterations, fadeTime) {

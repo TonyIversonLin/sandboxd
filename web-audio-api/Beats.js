@@ -3,7 +3,7 @@ function Beats(buffers){
 	this.beat2 = buffers[1];
 	this.beat3 = buffers[2];
 	this.gainNode = context.createGain();
-	this.gainNode.gain.value = 1;   //default
+	this.gainNode.gain.value = 0.5;   //default
 	this.gainNode.connect(context.destination);
 }
 
