@@ -4,6 +4,7 @@ casper.start('https://tonyiversonlin.000webhostapp.com/');
 
 casper.then(function(){
 	this.echo('First Page: ' + this.getTitle());
+	console.log(this===casper);
 });
 
 casper.thenOpen('http://phantomjs.org', function(){
